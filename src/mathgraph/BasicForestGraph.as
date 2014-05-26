@@ -4,10 +4,10 @@ package mathgraph
 	 * A basic graph that is prevented from having cycles.  Any attempt to add an edge that would create a cycle fails.
 	 * @author Sean Snyder
 	 */
-	public class BasicTree extends BasicGraph 
+	public class BasicForestGraph extends BasicGraph 
 	{
 		
-		public function BasicTree() 
+		public function BasicForestGraph() 
 		{
 			super();
 		}
