@@ -1,13 +1,15 @@
 package mathgraph 
 {
 	/**
-	 * A data structure that represents a simple mathematics graph.  It contains a set of nodes connected by edges.
+	 * A data structure that represents a simple mathematics graph.  It contains a set of nodes connected by edges. 
+	 * Edges are undirected with no values associated with them.  Pairs of nodes can have only 1 edge between them.
+	 * Nodes may not have loops (edges connecting a node to itself).
 	 * @author Sean Snyder
 	 */
 	public class BasicGraph 
 	{
 		//each index of this array represents a node, and contains an array of the index values of adjacent nodes
-		private var adjacencyList:Array; //ex: [ [1,3], [0], undefined, [0], []]
+		private var adjacencyList:Array; //ex: [ [1,3], [0,1], undefined, [0,1], []]
 		
 		private var numNodes:int = 0;
 		private var numEdges:int = 0;
@@ -81,6 +83,9 @@ package mathgraph
 		
 		//add an edge between 2 nodes
 		public function addEdge(nodeA:int, nodeB:int):Boolean {
+			if (nodeA == nodeB) {
+				return false;
+			}
 			var adjListA:Array = adjacencyList[nodeA];
 			var adjListB:Array = adjacencyList[nodeB];
 			if (adjListA == null || adjListB == null ||
@@ -95,6 +100,9 @@ package mathgraph
 		
 		//remove an edge between 2 nodes
 		public function removeEdge(nodeA:int, nodeB:int):Boolean {
+			if (nodeA == nodeB) {
+				return false;
+			}
 			var adjListA:Array = adjacencyList[nodeA];
 			var adjListB:Array = adjacencyList[nodeB];
 			if (adjListA == null || adjListB == null) {
