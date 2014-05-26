@@ -60,7 +60,12 @@ package mathgraph
 				//if directed graph, remove this node from another other node's adjacency list TODO
 				for each (var adjNode:int in adjList) 
 				{
-					removeEdge(node, adjNode);
+					while(adjacent(node, adjNode)){
+						removeEdge(node, adjNode);
+					}
+					while (hasDirectionalEdges() && adjacent(adjNode, node)) {
+						removeEdge(adjNode, node);
+					}
 				}
 				
 				if (node == adjacencyList.length - 1) {
@@ -99,7 +104,7 @@ package mathgraph
 		
 		//remove an edge between 2 nodes
 		public function removeEdge(nodeA:int, nodeB:int):Boolean {
-			if (nodeA == nodeB) {
+			if (nodeA == nodeB && !canHaveLoops()) {
 				return false;
 			}
 			var adjListA:Array = adjacencyList[nodeA];
@@ -200,17 +205,17 @@ package mathgraph
 			return 1;
 		}
 		
-		protected function canHaveLoops():Boolean
+		public function canHaveLoops():Boolean
 		{
 			return false;
 		}
 		
-		private function hasDirectionalEdges():Boolean 
+		public function hasDirectionalEdges():Boolean 
 		{
 			return false;
 		}
 		
-		protected function allowsQuivers():Boolean 
+		public function allowsQuivers():Boolean 
 		{
 			return false;
 		}

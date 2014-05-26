@@ -1,5 +1,6 @@
 package 
 {
+	import asunit.textui.TestRunner;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -19,7 +20,15 @@ package
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			// entry point
+			runUnitTests();
+		}
+		
+		
+		private function runUnitTests():void 
+		{
+			var unittests:TestRunner = new TestRunner();
+			stage.addChild(unittests);
+			unittests.start(AllTests, null, TestRunner.SHOW_TRACE);
 		}
 		
 	}
