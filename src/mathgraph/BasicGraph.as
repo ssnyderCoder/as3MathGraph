@@ -2,17 +2,17 @@ package mathgraph
 {
 	/**
 	 * A data structure that represents a simple mathematics graph.  It contains a set of nodes connected by edges. 
-	 * Edges are undirected with no values associated with them.  Pairs of nodes can have only 1 edge between them.
+	 * Edges are undirected with no weights associated with them.  Pairs of nodes can have only 1 edge between them.
 	 * Nodes may not have loops (edges connecting a node to itself).
 	 * @author Sean Snyder
 	 */
 	public class BasicGraph 
 	{
 		//each index of this array represents a node, and contains an array of the index values of adjacent nodes
-		private var adjacencyList:Array; //ex: [ [1,3], [0,1], undefined, [0,1], []]
+		protected var adjacencyList:Array; //ex: [ [1,3], [0,1], undefined, [0,1], []]
 		
-		private var numNodes:int = 0;
-		private var numEdges:int = 0;
+		protected var numNodes:int = 0;
+		protected var numEdges:int = 0;
 		
 		public function BasicGraph() 
 		{
@@ -29,8 +29,8 @@ package mathgraph
 			return numEdges;
 		}
 		
-		//returns how many edges a node has connected to it, or -1 if the node doesnt exist
-		public function numberAdjacent(node:int):int {
+		//returns how many edges a node has connected from it to other nodes, or -1 if the node doesnt exist
+		public function numberEdges(node:int):int {
 			var adjList:Array = adjacencyList[node];
 			if (adjList == null) return -1;
 			else return adjList.length;
@@ -55,17 +55,12 @@ package mathgraph
 		//removes a node from a graph
 		public function removeNode(node:int):Boolean {
 			var adjList:Array = adjacencyList[node];
-			if (adjList != null) {
+			if (adjList != null) { 
 				//remove this node from neighbors' adjacency lists
+				//if directed graph, remove this node from another other node's adjacency list TODO
 				for each (var adjNode:int in adjList) 
 				{
-					var otherAdjList:Array = adjacencyList[adjNode];
-					if (otherAdjList == null) {
-						continue;
-					}
-					var nodeIndex:int = otherAdjList.indexOf(node);
-					otherAdjList.splice(nodeIndex, 1);
-					numEdges--;
+					removeEdge(node, adjNode);
 				}
 				
 				if (node == adjacencyList.length - 1) {
@@ -83,19 +78,23 @@ package mathgraph
 		
 		//add an edge between 2 nodes
 		public function addEdge(nodeA:int, nodeB:int):Boolean {
-			if (nodeA == nodeB) {
+			if (nodeA == nodeB && !canHaveLoops()) {
 				return false;
 			}
-			var adjListA:Array = adjacencyList[nodeA];
-			var adjListB:Array = adjacencyList[nodeB];
-			if (adjListA == null || adjListB == null ||
-				adjListA.indexOf(nodeB) != -1 || adjListB.indexOf(nodeA) != -1) {
-				return false;
+			else {
+				var adjListA:Array = adjacencyList[nodeA];
+				var adjListB:Array = adjacencyList[nodeB];
+				if (adjListA == null || adjListB == null ||
+					(!allowsQuivers() && (adjListA.indexOf(nodeB) != -1 || adjListB.indexOf(nodeA) != -1))) {
+					return false;
+				}
+				adjListA.push(nodeB);
+				if (!hasDirectionalEdges() && nodeA != nodeB) {
+					adjListB.push(nodeA);
+				}
+				numEdges++;
+				return true;
 			}
-			adjListA.push(nodeB);
-			adjListB.push(nodeA);
-			numEdges++;
-			return true;
 		}
 		
 		//remove an edge between 2 nodes
@@ -159,7 +158,7 @@ package mathgraph
 				//calculate distances for all neighbors
 				for each (var neighbor:int in adjacencyList[currentNode]) 
 				{
-					var newDistance:int = distances[currentNode] + 1;
+					var newDistance:int = distances[currentNode] + getWeight(currentNode, neighbor);
 					var oldDistance:int = distances[neighbor];
 					if (newDistance < oldDistance) {
 						distances[neighbor] = newDistance;
@@ -194,6 +193,26 @@ package mathgraph
 			}
 			
 			return path;
+		}
+		
+		protected function getWeight(nodeA:int, nodeB:int):int 
+		{
+			return 1;
+		}
+		
+		protected function canHaveLoops():Boolean
+		{
+			return false;
+		}
+		
+		private function hasDirectionalEdges():Boolean 
+		{
+			return false;
+		}
+		
+		protected function allowsQuivers():Boolean 
+		{
+			return false;
 		}
 		
 		//tests whether a node is found in a list of adjacent nodes
