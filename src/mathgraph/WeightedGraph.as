@@ -1,18 +1,17 @@
 package mathgraph 
 {
 	/**
-	 * A mathematics graph that is able to have multiple edges between the same pairs of nodes, directed edges, weighted edges,
-	 * and loops.
+	 * A mathematics graph that is able to have weighted edges
 	 * @author Sean Snyder
 	 */
-	public class AdvancedDiGraph extends BasicGraph
+	public class WeightedGraph extends BasicGraph
 	{
 		//each index of this array represents a node, and contains an array of the weights for its edges
 		private var weightedList:Array; //ex: [ [50, 90], [120, 70], undefined, [45, 125], []]
 		
-		public function AdvancedDiGraph() 
+		public function WeightedGraph(allowLoops:Boolean=false, allowDirectedEdges:Boolean=false, allowQuiverEdges:Boolean=false) 
 		{
-			super();
+			super(allowLoops, allowDirectedEdges, allowQuiverEdges);
 		}
 		
 		//addEdge calls addWeightedEdge with default weight of 1

@@ -7,9 +7,9 @@ package mathgraph
 	public class BasicForestGraph extends BasicGraph 
 	{
 		
-		public function BasicForestGraph() 
+		public function BasicForestGraph(allowLoops:Boolean=false, allowDirectedEdges:Boolean=false, allowQuiverEdges:Boolean=false) 
 		{
-			super();
+			super(allowLoops, allowDirectedEdges, allowQuiverEdges);
 		}
 		
 		override public function addEdge(nodeA:int, nodeB:int):Boolean 
