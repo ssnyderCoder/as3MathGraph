@@ -25,6 +25,7 @@ package mathgraph
 		public function BasicGraph(allowLoops:Boolean=false, allowDirectedEdges:Boolean=false, allowQuiverEdges:Boolean=false) 
 		{
 			adjacencyList = new Array();
+			weightedList = new Array();
 			
 			_allowLoops = allowLoops;
 			_allowDirectedEdges = allowDirectedEdges;
@@ -69,6 +70,7 @@ package mathgraph
 			if (node < 0) return false;
 			if (node >= adjacencyList.length || adjacencyList[node] == null) {
 				adjacencyList[node] = new Array();
+				weightedList[node] = new Array();
 				numNodes++;
 				return true;
 			}
@@ -96,9 +98,11 @@ package mathgraph
 				}
 				if (node == adjacencyList.length - 1) {
 					adjacencyList.pop();
+					weightedList.pop();
 				}
 				else {
 					adjacencyList[node] = null;
+					weightedList[node] = null;
 				}
 				numNodes--;
 				return true;
@@ -108,22 +112,29 @@ package mathgraph
 		}
 		
 		//add an edge between 2 nodes
-		public function addEdge(nodeA:int, nodeB:int):Boolean {
+		public function addEdge(nodeA:int, nodeB:int, weight:int=1):Boolean {
 			if (nodeA == nodeB && !allowsLoops) {
+				return false;
+			}
+			else if (weight < 0) { //invalid weight: must be positive
 				return false;
 			}
 			else {
 				var adjListA:Array = adjacencyList[nodeA];
 				var adjListB:Array = adjacencyList[nodeB];
+				var weightListA:Array = weightedList[nodeA];
+				var weightListB:Array = weightedList[nodeB];
 				if (adjListA == null || adjListB == null || (!allowsQuivers && adjListA.indexOf(nodeB) != -1)) {
 					return false;
 				}
 				adjListA.push(nodeB);
+				weightListA.push(weight);
 				if (!hasDirectionalEdges && nodeA != nodeB) {
 					if (!allowsQuivers && adjListB.indexOf(nodeA) != -1) {
 						return false;
 					}
 					adjListB.push(nodeA);
+					weightListB.push(weight);
 				}
 				numEdges++;
 				return true;
@@ -137,6 +148,7 @@ package mathgraph
 			}
 			
 			var adjListA:Array = adjacencyList[nodeA];
+			var weightListA:Array = weightedList[nodeA];
 			if (adjListA == null) {
 				return false;
 			}
@@ -146,8 +158,10 @@ package mathgraph
 				return false;
 			}
 			adjListA.splice(nodeBIndex, 1);
+			weightListA.splice(nodeBIndex, 1);
 			if (!hasDirectionalEdges && nodeA != nodeB) {
 				var adjListB:Array = adjacencyList[nodeB];
+				var weightListB:Array = weightedList[nodeB];
 				if (adjListB == null) {
 					return false;
 				}
@@ -156,6 +170,7 @@ package mathgraph
 					return false;
 				}
 				adjListB.splice(nodeAIndex, 1);
+				weightListB.splice(nodeAIndex, 1);
 			}
 			numEdges--;
 			return true;
@@ -172,9 +187,42 @@ package mathgraph
 			return hasAdjacentNode(nodeB, adjListA);
 		}
 		
-		public function getWeight(nodeA:int, nodeB:int):int 
+		/**
+		 * Gets the weight of an edge between 2 nodes.
+		 * If the Graph has directional edges, only the edges from the starting node to the ending node will be considered.
+		 * @param	nodeA starting node
+		 * @param	nodeB ending node
+		 * @param	shortest Only applies if quivers are allowed.  If true, always choose the shortest edge, otherwise choose any valid edge at random.
+		 * @return the weight of an edge, or -1 if that edge does not exist.
+		 */
+		public function getWeight(nodeA:int, nodeB:int, shortest:Boolean=true):int 
 		{
-			return 1;
+			var weights:Array = new Array();
+			
+			var currentIndex:int = 0;
+			var adjListA:Array = adjacencyList[nodeA];
+			var weightListA:Array = weightedList[nodeA];
+			while (currentIndex != -1 && currentIndex < adjListA.length) {
+				currentIndex = adjListA.indexOf(nodeB, currentIndex);
+				if (currentIndex != -1) {
+					weights.push(weightListA[currentIndex]);
+					currentIndex++;
+				}
+			}
+			
+			if (weights.length == 0) return -1;
+			else if (shortest) {
+				var shortestWeight:int = int.MAX_VALUE;
+				for each (var weight:int in weights) 
+				{
+					if (weight < shortestWeight) shortestWeight = weight;
+				}
+				return shortestWeight;
+			}
+			else {
+				var randomIndex:int = Math.floor(Math.random() * weights.length)
+				return weights[randomIndex];
+			}
 		}
 		
 		public function get allowsLoops():Boolean

@@ -7,15 +7,22 @@ package mathgraph
 	public class GraphUtil 
 	{
 		
+		//checks if a graph contains any cycles.
 		public static function isTreeGraph(graph:BasicGraph):Boolean {
 			//path find for all nodes
 			//if node checked more than once, return true
 			return false;
 		}
 		
-		//finds the shortest path along edges from node A to node B (Dijkstra algorithm).
-		//returns this path as an array of nodes, or null if no such path exists.
-		public static function findShortestPath(graph:BasicGraph, nodeA:int, nodeB:int):Array {
+		/**
+		 * Finds the shortest path along edges from node A to node B (Dijkstra algorithm).
+		 * @param	graph The BasicGraph to find the path in.
+		 * @param	nodeA starting node
+		 * @param	nodeB ending node
+		 * @param	shortestEdges Applies only if quivers permitted in graph.  If true, the shortest edges are always considered for thr pathfinding, otherwise valid edges are chosen at random, which can randomly result in paths being longer.
+		 * @return this path as an array of nodes, or null if no such path exists.
+		 */
+		public static function findShortestPath(graph:BasicGraph, nodeA:int, nodeB:int, shortestEdges:Boolean=true):Array {
 			if (!graph.hasNode(nodeA) || !graph.hasNode(nodeB)) {
 				return null;
 			}
@@ -42,7 +49,7 @@ package mathgraph
 				var neighbors:Array = graph.neighbors(currentNode);
 				for each (var neighbor:int in neighbors) 
 				{
-					var newDistance:int = distances[currentNode] + graph.getWeight(currentNode, neighbor);
+					var newDistance:int = distances[currentNode] + graph.getWeight(currentNode, neighbor, shortestEdges);
 					var oldDistance:int = distances[neighbor];
 					if (newDistance < oldDistance) {
 						distances[neighbor] = newDistance;
