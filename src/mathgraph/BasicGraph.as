@@ -177,8 +177,29 @@ package mathgraph
 		}
 		
 		//returns an array containing all adjacent nodes
-		public function neighbors(node:int):Array {
-			return adjacencyList[node];
+		/**
+		 * Returns a list of nodes that are adjacent to the specified node.
+		 * @param	node any nodes adjacent to this node will be provided
+		 * @param	exclusive Applies only if quivers are enabled; If true, adjacent nodes appear only once in the list.
+		 * @return an array containing all adjacent nodes
+		 */
+		public function neighbors(node:int, exclusive:Boolean=true):Array {
+			if (exclusive && allowsQuivers) {
+				var exclNodes:Array = new Array();
+				var exclAdjList:Array = new Array();
+				for each (var node:int in adjacencyList[node]) 
+				{
+					if (exclNodes[node] == null) {
+						exclAdjList.push(node);
+						exclNodes[node] = 0;
+					}
+				}
+				return exclAdjList;
+			}
+			else {
+				var adjList:Array = adjacencyList[node];
+				return adjList == null ? null : adjList.concat();
+			}
 		}
 		
 		//tests whether there is an edge between 2 nodes

@@ -8,7 +8,7 @@ package mathgraph
 	 */
 	public class TestBasicGraph extends TestCase
 	{
-		//Subtle, unexpected bugs caught thanks to unit testing: 2
+		//Subtle, unexpected bugs caught thanks to unit testing: 3
 		
 		public function TestBasicGraph(testMethod:String = null)
 		{
@@ -167,8 +167,8 @@ package mathgraph
 		public function testDirectedQuiverEdges():void {
 			var testGraph:BasicGraph = getGraph(true, true, true);
 			testGraph.addNode(0);
-			testGraph.addEdge(0, 0);
-			assertTrue("Should be able to add 2nd edge", testGraph.addEdge(0, 0));
+			testGraph.addEdge(0, 0, 10);
+			assertTrue("Should be able to add 2nd edge", testGraph.addEdge(0, 0, 25));
 			assertTrue("Node 0 should have 2 edges", testGraph.numberEdges(0) == 2);
 			assertTrue("Should be 2 edges", testGraph.totalEdges() == 2);
 			
@@ -182,8 +182,8 @@ package mathgraph
 			
 			//two nodes
 			testGraph.addNode(1);
-			assertTrue("Should be able to add 1st edge to 1", testGraph.addEdge(0, 1));
-			assertTrue("Should be able to add 2nd edge to 1", testGraph.addEdge(0, 1));
+			assertTrue("Should be able to add 1st edge to 1", testGraph.addEdge(0, 1, 5));
+			assertTrue("Should be able to add 2nd edge to 1", testGraph.addEdge(0, 1, 15));
 			assertTrue("Node 0 should have 2 edges to 1", testGraph.numberEdges(0) == 2);
 			assertTrue("Should be 2 edges to 1", testGraph.totalEdges() == 2);
 			
