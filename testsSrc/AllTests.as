@@ -2,7 +2,7 @@ package
 {
 	import asunit.framework.TestSuite;
 	import mathgraph.TestBasicGraph;
-	import mathgraph.TestForestGraph;
+	import mathgraph.TestGraphUtil;
 	/**
 	 * ...
 	 * @author Sean Snyder
@@ -14,7 +14,7 @@ package
 		{
 			super();
             addTest(new TestBasicGraph());
-            addTest(new TestForestGraph());
+            addTest(new TestGraphUtil());
 		}
 		
 	}
