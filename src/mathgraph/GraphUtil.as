@@ -7,11 +7,62 @@ package mathgraph
 	public class GraphUtil 
 	{
 		
-		//checks if a graph contains any cycles.
-		public static function isTreeGraph(graph:BasicGraph):Boolean {
-			//path find for all nodes
-			//if node checked more than once, return true
-			return false;
+		//checks if a graph is made up of 1 or more trees and has no cycles
+		public static function isForestGraph(graph:BasicGraph):Boolean {
+			//initializations
+			var visited:Array = new Array();
+			var previous:Array = new Array();
+			const nodeUnVisited:int = 0;
+			const nodeVisited:int = 1;
+			var nodes:Array = graph.getAllNodes();
+			for (var i:int = 0; i < nodes.length; i++) 
+			{
+				var node:int = nodes[i];
+				visited[node] = nodeUnVisited;
+				previous[node] = -1;
+			}
+			var currentNode:int = nodes[0];
+			previous[currentNode] = -1; //tree start node
+			
+			while (currentNode != -1) {
+				//visit all neighbors
+				var neighbors:Array = graph.neighbors(currentNode, false);
+				for each (var neighbor:int in neighbors) 
+				{
+					if(previous[currentNode] == neighbor && !graph.hasDirectionalEdges){
+						continue;
+					}
+					else if(previous[neighbor] == -1 && (visited[neighbor] == nodeUnVisited || previous[currentNode] == -1)){
+						previous[neighbor] = currentNode;
+					}
+					else {
+						return false;
+					}
+				}
+				visited[currentNode] = nodeVisited;
+				
+				//repeat loop with a node that has been unvisited (and has previous node, if any)
+				var nextNode:int = -1;
+				var isStartNode:Boolean = true;
+				for (var j:int = 0; j < visited.length; j++) 
+				{
+					if (visited[j] == nodeUnVisited) {
+						if (previous[j] != -1) {
+							nextNode = j;
+							isStartNode = false;
+						}
+						else if(nextNode == -1){
+							nextNode = j;
+						}
+					}
+				}
+				currentNode = nextNode;
+				if (isStartNode && currentNode != -1) {
+					previous[currentNode] = -1;
+				}
+			}
+			
+			return true;
 		}
 		
 		/**

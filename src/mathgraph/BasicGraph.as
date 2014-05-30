@@ -2,7 +2,7 @@ package mathgraph
 {
 	/**
 	 * A data structure that represents a simple mathematics graph.  It contains a set of nodes connected by edges. 
-	 * Edges are either undirected or directed, but have no weights associated with them.
+	 * Edges are either undirected or directed, and may have weights associated with them.
 	 * Pairs of nodes can be permitted to either allow only 1 edge between them, or multiple edges.
 	 * Nodes may have loops if allowed (edges connecting a node to itself).
 	 * @author Sean Snyder

@@ -14,6 +14,10 @@ package mathgraph
 			super(testMethod);
 		}
 		
+		public function getGraph(loops:Boolean=false, directedEdges:Boolean=false, quiverEdges:Boolean=false):BasicGraph {
+			return new BasicGraph(loops, directedEdges, quiverEdges);	
+		}
+		
 		public function testSimplePath():void {
 			var testGraph:BasicGraph = getGraph();
 			testGraph.addNode(0);
@@ -172,8 +176,94 @@ package mathgraph
 			assertTrue("Path should list node 3", path[2] == 3);
 		}
 		
-		public function getGraph(loops:Boolean=false, directedEdges:Boolean=false, quiverEdges:Boolean=false):BasicGraph {
-			return new BasicGraph(loops, directedEdges, quiverEdges);	
+		public function testSimplestTree():void {
+			var testGraph:BasicGraph = getGraph();
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			//testGraph.addNode(2);
+			//testGraph.addNode(3);
+			testGraph.addEdge(0, 1);
+			//testGraph.addEdge(1, 2);
+			//testGraph.addEdge(0, 3);
+			assertTrue("Should be a tree", GraphUtil.isForestGraph(testGraph));
+		}
+		
+		public function testValidTree():void {
+			var testGraph:BasicGraph = getGraph();
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			testGraph.addNode(2);
+			testGraph.addNode(3);
+			testGraph.addEdge(0, 1);
+			testGraph.addEdge(1, 2);
+			testGraph.addEdge(0, 3);
+			assertTrue("Should be a tree", GraphUtil.isForestGraph(testGraph));
+		}
+		
+		public function testValidForest():void {
+			var testGraph:BasicGraph = getGraph();
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			testGraph.addNode(2);
+			testGraph.addNode(3);
+			testGraph.addNode(4);
+			testGraph.addNode(5);
+			testGraph.addEdge(0, 1);
+			testGraph.addEdge(1, 2);
+			testGraph.addEdge(4, 3);
+			assertTrue("Should be a forest", GraphUtil.isForestGraph(testGraph));
+		}
+		
+		public function testDirectedValidTree():void {
+			var testGraph:BasicGraph = getGraph(true, true);
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			testGraph.addNode(2);
+			testGraph.addNode(3);
+			testGraph.addEdge(0, 1);
+			testGraph.addEdge(1, 2);
+			testGraph.addEdge(0, 3);
+			assertTrue("Should be a tree", GraphUtil.isForestGraph(testGraph));
+		}
+		
+		public function testDirectedValidForest():void {
+			var testGraph:BasicGraph = getGraph(true, true);
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			testGraph.addNode(2);
+			testGraph.addNode(3);
+			testGraph.addNode(4);
+			testGraph.addNode(5);
+			testGraph.addEdge(0, 1);
+			testGraph.addEdge(1, 2);
+			testGraph.addEdge(4, 3);
+			assertTrue("Should be a forest", GraphUtil.isForestGraph(testGraph));
+		}
+		
+		public function testInvalidTree():void {
+			var testGraph:BasicGraph = getGraph();
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			testGraph.addNode(2);
+			testGraph.addNode(3);
+			testGraph.addEdge(0, 1);
+			testGraph.addEdge(1, 2);
+			testGraph.addEdge(0, 3);
+			testGraph.addEdge(2, 3);
+			assertFalse("Should not be a tree", GraphUtil.isForestGraph(testGraph));
+		}
+		
+		public function testInvalidDirectedTree():void {
+			var testGraph:BasicGraph = getGraph(true, true);
+			testGraph.addNode(0);
+			testGraph.addNode(1);
+			testGraph.addNode(2);
+			testGraph.addNode(3);
+			testGraph.addEdge(0, 1);
+			testGraph.addEdge(1, 2);
+			testGraph.addEdge(2, 3);
+			testGraph.addEdge(3, 0);
+			assertFalse("Should not be a tree", GraphUtil.isForestGraph(testGraph));
 		}
 		
 	}

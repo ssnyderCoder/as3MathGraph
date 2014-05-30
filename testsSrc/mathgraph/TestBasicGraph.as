@@ -8,7 +8,7 @@ package mathgraph
 	 */
 	public class TestBasicGraph extends TestCase
 	{
-		//Subtle, unexpected bugs caught thanks to unit testing: 3
+		//Subtle, unexpected bugs caught thanks to unit testing: 6
 		
 		public function TestBasicGraph(testMethod:String = null)
 		{
